@@ -55,8 +55,8 @@ lbb_handle lbb_create_to_ext_buf(int size, void* user_buffer)
 
 		/* align to the word boundary */
 		size = size & (~3); 
-		lbb->extbuf = user_buffer;
 		(void)memset((void*)lbb, 0, sizeof(lbb_header));
+		lbb->extbuf = user_buffer;
 		
 		lbb->end  = (size+3)/sizeof(u32);
 		lbb->size = (size+3)/sizeof(u32);
@@ -95,14 +95,14 @@ void* lbb_alloc(lbb_handle hdl, int size)
 {
 	lbb_header* lbb = (lbb_header*)hdl;
 	void* ret = NULL;
-	u32 total = LBB_BLK_SIZE(size);
+	i32 total = LBB_BLK_SIZE(size);
 	
 	if(lbb == NULL || size <= 0 || (lbb->free < total)) 
 		return ret;
 
 	/* find the matching free area for allocation*/
-	u32 tail = lbb->last;
-	u32 head = lbb->cur;
+	i32 tail = lbb->last;
+	i32 head = lbb->cur;
 	if(tail <= head)
 	{
 		if(lbb->end-lbb->cur >= (total))

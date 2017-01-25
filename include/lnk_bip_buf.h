@@ -32,6 +32,25 @@ typedef void*  lbb_handle;
 *
 * @param[in] size   specify the linked bip buffer size
 *
+* @return A pointer to the handle of the cicurlar buffer. 
+*         in case of errors NULL returned. 
+*
+* @par Example:
+*  @code
+*    lbb_handle hdl_0 = lbb_create(1024);
+*
+*  @endcode
+*
+*******************************************************************************/
+lbb_handle lbb_create(int size);
+
+/**
+********************************************************************************
+*
+* @brief  create linked bip buffer for specied parameters 
+*
+* @param[in] size   specify the linked bip buffer size
+*
 * @param[in] buffer specify the pointer to buffer memory
 *                   if set to NULL, default buffer allocated.
 *
@@ -40,15 +59,14 @@ typedef void*  lbb_handle;
 *
 * @par Example:
 *  @code
-*    lbb_handle hdl_0 = lbb_create(1024);
 *
 *    u32 size = 1024;
 *    void* buffer = (void*)malloc(size);
-*    lbb_handle hdl_1 = lbb_create(buffer_size, buffer);
+*    lbb_handle hdl_1 = lbb_create_to_ext_buf(buffer_size, buffer);
 *  @endcode
 *
 *******************************************************************************/
-lbb_handle lbb_create(int size);
+lbb_handle lbb_create_to_ext_buf(int size, void* user_buffer);
 
 /**
 ********************************************************************************

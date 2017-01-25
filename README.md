@@ -20,7 +20,7 @@ it requires the buffer **MUST** be in a continuous memory area to cater the cach
 	void* ptr = lbb_alloc(hdl, size);
 
 	/* Free the block */
-	lbb_free(ptr);
+	lbb_free(hdl, ptr);
 
 ## License
 >This program is free software; you can redistribute it and/or modify it under

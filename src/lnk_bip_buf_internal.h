@@ -55,6 +55,7 @@ with this program. If not, see <http://www.gnu.org/licenses/>.
 
 /*----------------------------------------------------------------------------*/
 typedef unsigned int u32;
+typedef int i32;
 
 typedef struct lbb_blk_hd
 {
