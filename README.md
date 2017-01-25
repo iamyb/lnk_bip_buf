@@ -22,8 +22,12 @@ it requires the buffer **MUST** be in a continuous memory area to cater the cach
 	/* Free the block */
 	lbb_free(hdl, ptr);
 
-####Perfomance
+####Perfomance 
+Below is a comparation between glibc malloc/free and lnk-bip-buf alloc/free. The upper one is to compare the consumed clocks for alloc and free with series block size. And the bottom adds one time memset upon the first scenario. 
+
 ![](./doc/performance.png)
+
+Please refer source code test/test_performance.c for the details.
 
 ## License
 >This program is free software; you can redistribute it and/or modify it under
