@@ -12,17 +12,18 @@
 # You should have received a copy of the GNU Lesser General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
-SUBDIRS = src
-SUBDIRS+= test
-CLEANS  = $(addprefix clean_, $(SUBDIRS))
+include ../rules.mk
 
-all: $(SUBDIRS) 
+LIB_LBB_SRC+= lnk_bip_buf.c
+LIB_LBB_OBJ=$(LIB_LBB_SRC:.c=.o)
 
-.PHONY: $(SUBDIRS) clean $(CLEANS)
-$(SUBDIRS): 
-	make -C $@
+all: $(LIB_LBB) $(LIB_LBB_HOOK)
 
-clean: $(CLEANS)
-$(CLEANS):
-	make -C $(@:clean_%=%) clean
+$(LIB_LBB): $(LIB_LBB_OBJ)
+	$(AR) rcs $(LIB_LBB) $? 
 
+$(LIB_LBB_OBJ): $(LIB_LBB_SRC)
+	$(CC) $(CFLAGS_GLOBAL) -c -o $(?:.c=.o) $?
+
+clean:
+	$(RM) $(LIB_LBB) $(LIB_LBB_HOOK) $(LIB_LBB_OBJ) 

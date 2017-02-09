@@ -12,17 +12,18 @@
 # You should have received a copy of the GNU Lesser General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
-SUBDIRS = src
-SUBDIRS+= test
-CLEANS  = $(addprefix clean_, $(SUBDIRS))
+CC=gcc
+AR=ar
+RM=rm
+CPP=g++
 
-all: $(SUBDIRS) 
+INC_PATH = ../include
+SRC_PATH = ../src
+LIB_PATH = ../lib
+LIB_LBB = $(LIB_PATH)/liblbb.a
 
-.PHONY: $(SUBDIRS) clean $(CLEANS)
-$(SUBDIRS): 
-	make -C $@
-
-clean: $(CLEANS)
-$(CLEANS):
-	make -C $(@:clean_%=%) clean
-
+#CFLAGS_GLOBAL = -std=gnu99 
+CFLAGS_GLOBAL = -I$(INC_PATH)
+CFLAGS_GLOBAL += -O3
+CPPFLAGS_GLOBAL = -std=gnu99 
+LDFLAGS_GLOBAL = 

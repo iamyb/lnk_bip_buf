@@ -80,7 +80,7 @@ lbb_handle lbb_create_to_ext_buf(int size, void* user_buffer);
 *    lbb_handle hdl = lbb_create(1024);
 *
 *    if(hdl != NULL)
-*    	lbb_destroy(hdl);
+*        lbb_destroy(hdl);
 *  @endcode
 *
 *******************************************************************************/

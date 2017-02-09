@@ -35,21 +35,21 @@ with this program. If not, see <http://www.gnu.org/licenses/>.
 #define LBB_BLK_SIZE(a)  ((u32)(LBB_BH_WORDS+LBB_B2W_ALIGN(a)))
 
 #define LBB_FREE_THIS_BLOCK(lbb, bh) \
-	({ \
-	 lbb->tailor = (bh->next==0)?0:lbb->tailor;\
+    ({ \
+     lbb->tailor = (bh->next==0)?0:lbb->tailor;\
      lbb->last = bh->next;\
-	 bh->next = 0xFFFFFFFF;\
-	 lbb->used -= bh->size;\
-	 bh->size = 0;\
-	 lbb->free = lbb->size-lbb->used;\
-	 bh->status = LBB_BH_FREE;\
-	 })
+     bh->next = 0xFFFFFFFF;\
+     lbb->used -= bh->size;\
+     bh->size = 0;\
+     lbb->free = lbb->size-lbb->used;\
+     bh->status = LBB_BH_FREE;\
+     })
 
 #define LBB_GET_BH_BY_PTR(ptr) \
-	((lbb_blk_hd*)((u32*)ptr - LBB_BH_WORDS))
+    ((lbb_blk_hd*)((u32*)ptr - LBB_BH_WORDS))
 
 #define LBB_GET_LAST_BLOCK_BH(lbb) \
-	((lbb_blk_hd*)(lbb->last+&lbb->buffer[0]))
+    ((lbb_blk_hd*)(lbb->last+&lbb->buffer[0]))
 
 #define LBB_BUF_MIN_SZ 1024 /* at least 1KB */
 
@@ -59,26 +59,26 @@ typedef int i32;
 
 typedef struct lbb_blk_hd
 {
-	u32   status;         /* block status    */
-	u32   size;           /* block size      */
-	u32   next;           /* next block      */
+    u32   status;         /* block status    */
+    u32   size;           /* block size      */
+    u32   next;           /* next block      */
 }lbb_blk_hd;
 
 typedef struct lbb_header
 {
-	u32   size;           /* total size      */
-	u32   used;           /* alloc size      */
-	u32   free;           /* free size       */
-	u32   tailor;         /* tail words      */
-	u32   max;            /* max used        */ /*not supported yet*/
-	u32   cnt;            /* block count     */ /*not supported yet*/
-	
-	u32   cur;            /* current position*/
-	u32   last;           /* last free       */
-	u32   end;            /* buffer end      */
+    u32   size;           /* total size      */
+    u32   used;           /* alloc size      */
+    u32   free;           /* free size       */
+    u32   tailor;         /* tail words      */
+    u32   max;            /* max used        */ /*not supported yet*/
+    u32   cnt;            /* block count     */ /*not supported yet*/
+    
+    u32   cur;            /* current position*/
+    u32   last;           /* last free       */
+    u32   end;            /* buffer end      */
 
-	void *extbuf;         /* external buffer */
-	u32   buffer[1];  	  /* buffer          */
+    void *extbuf;         /* external buffer */
+    u32   buffer[1];        /* buffer          */
 }lbb_header;
 
 #if 0
@@ -142,7 +142,7 @@ int lbb_get_used_space(lbb_handle hdl);
 *******************************************************************************/
 int lbb_get_free_space(lbb_handle hdl);
 #endif
-	
+    
 /**
 ********************************************************************************
 *
@@ -224,4 +224,24 @@ int lbb_get_head(lbb_handle hdl);
 *
 *******************************************************************************/
 int lbb_get_tail(lbb_handle hdl);
+
+/**
+********************************************************************************
+*
+* @brief  get the tail offset from specied lbb handle
+*
+* @param[in] cb specify the linked bip buffer handle
+*
+* @return return the tail offset space of the buffer.
+*
+* @par Example:
+*  @code
+*    lbb_handle hdl = lbb_create(1024, NULL);
+*    int words = lbb_get_tailor_words(hdl);
+*    lbb_free(ptr);
+*
+*  @endcode
+*
+*******************************************************************************/
+int lbb_get_tailor_words(lbb_handle hdl);
 #endif
