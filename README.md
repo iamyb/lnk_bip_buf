@@ -1,12 +1,8 @@
 ##What is lnk-bip-buf
 
-lnk-bip-buf(Linked Bip Buffer, LBB) is a straightforward implementation of circular buffer. It aims to support the memory allocation/de-allocation based on circualr buffer in **NO STRICT FIFO realtime stream** scenarios with high performance. 
+lnk-bip-buf(Linked Bip Buffer, LBB) is an improvement implementation of BIP buffer. It provides a lightweight and high-performance memory alloc/free mechanism for realtime stream processing. 
 
-To achieve that, it links the allocated blocks one by one and introduce 3 additional states for each block. Once one block need be freed earlier than the tail of circular buffer, then just mark the block **"READY be freed"** and it will be finally committed to "free" state until the tail arriving it. 
-
-Besides that, it also supports **VARIABLE-SIZE** blocks allocation and **NO-WRAP-AROUND** allocation in the end of buffer while there's no enough left space to fullfill the request. It will extend current block to the buffer end or add one dummy block which will link to the begin of the buffer.
-
-it requires the buffer **MUST** be in a continuous memory area to cater the cache policy so it can reduce cache miss while handling stream data. And it's **thread-unsafe**, therefore you have to add addtional locks to handle the usage in multi-thread processing.
+It requires the buffer **MUST** be in a continuous memory area to cater the cache policy so it can reduce cache missing while handling stream data. And it's **thread-unsafe**, therefore you have to add addtional locks to handle the usage in multi-thread processing.
 
 ####Usage Example
 
@@ -23,11 +19,12 @@ it requires the buffer **MUST** be in a continuous memory area to cater the cach
 	lbb_free(hdl, ptr);
 
 ####Perfomance 
-Below is a comparation between glibc malloc/free and lnk-bip-buf alloc/free. The upper one is to compare the consumed clocks for alloc and free with series block size. And the bottom adds one time memset upon the first scenario. 
+Below is a comparation between glibc malloc/free and lnk-bip-buf alloc/free. The upper one is to compare the consumed clocks for alloc and free with series block size. And the bottom adds one time memset upon the first scenario. (Ubuntu 16.04, Intel i5-4300U @ 1.96GHz)
 
 ![](./doc/performance.png)
 
-Please refer source code test/test_performance.c for the details.
+Please refer source code test/test_performance.c for the details. Note you have to execute setenv.sh before run test_performance to create hugepage in your environment.
+ 
 
 ## License
 >This program is free software; you can redistribute it and/or modify it under
