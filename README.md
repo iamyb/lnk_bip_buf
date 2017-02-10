@@ -2,7 +2,7 @@
 
 lnk-bip-buf(Linked Bip Buffer, LBB) provides a lightweight and high-performance memory alloc/free mechanism for realtime stream processing. 
 
-It requires the buffer **MUST** be in a continuous memory area to cater the cache policy.  Therefore it can reduce cache missing while handling stream data. And it's **thread-unsafe**, therefore you have to add addtional locks to handle the usage in multi-thread processing.
+It requires the buffer **MUST** be in a continuous memory area to cater the cache policy. With this the successive stream data blocks could be allocated in adjacent memory area and then reduce cache missing and thrashing during the data processing. It's **thread-unsafe** in current implementation. Therefore you have to add addtional locks to handle the usage in multi-thread processing.
 
 ####Usage Example
 
