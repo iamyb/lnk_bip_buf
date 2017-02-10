@@ -145,7 +145,7 @@ void  lbb_free(lbb_handle hdl, void* ptr);
 *  @endcode
 *
 *******************************************************************************/
-int lbb_get_max_used_space(lbb_handle hdl);
+unsigned int lbb_get_max_used_space(lbb_handle hdl);
 
 /**
 ********************************************************************************
@@ -165,7 +165,7 @@ int lbb_get_max_used_space(lbb_handle hdl);
 *  @endcode
 *
 *******************************************************************************/
-int lbb_get_used_space(lbb_handle hdl);
+unsigned int lbb_get_used_space(lbb_handle hdl);
 
 /**
 ********************************************************************************
@@ -185,7 +185,7 @@ int lbb_get_used_space(lbb_handle hdl);
 *  @endcode
 *
 *******************************************************************************/
-int lbb_get_free_space(lbb_handle hdl);
+unsigned int lbb_get_free_space(lbb_handle hdl);
 
 /**
 ********************************************************************************
@@ -205,7 +205,7 @@ int lbb_get_free_space(lbb_handle hdl);
 *  @endcode
 *
 *******************************************************************************/
-int lbb_get_block_count(lbb_handle hdl);
+unsigned int lbb_get_block_count(lbb_handle hdl);
 #ifdef __cplusplus
 }
 #endif 

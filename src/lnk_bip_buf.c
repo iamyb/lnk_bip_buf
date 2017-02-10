@@ -105,12 +105,12 @@ void* lbb_alloc(lbb_handle hdl, int size)
     i32 head = lbb->cur;
     if(tail <= head)
     {
-        if(lbb->end-lbb->cur >= (total))
+        if(lbb->end - head >= (total))
         {
             tail = lbb->end;
         }
-        else if(lbb->last >= (total))
-        {
+        else if((tail - 0) >= (total))
+        {   
             head = 0;
             lbb_add_dummy(lbb);
         }
@@ -183,7 +183,7 @@ void lbb_free(lbb_handle hdl, void* ptr)
 }
 
 /* -------------------------------------------------------------------------- */
-int lbb_get_max_used_space(lbb_handle hdl)
+u32 lbb_get_max_used_space(lbb_handle hdl)
 {
     lbb_header* lbb = (lbb_header*) hdl;
     
@@ -191,7 +191,7 @@ int lbb_get_max_used_space(lbb_handle hdl)
 }
 
 /* -------------------------------------------------------------------------- */
-int lbb_get_used_space(lbb_handle hdl)
+u32 lbb_get_used_space(lbb_handle hdl)
 {
     lbb_header* lbb = (lbb_header*) hdl;
     
@@ -199,7 +199,7 @@ int lbb_get_used_space(lbb_handle hdl)
 }
 
 /* -------------------------------------------------------------------------- */
-int lbb_get_free_space(lbb_handle hdl)
+u32 lbb_get_free_space(lbb_handle hdl)
 {
     lbb_header* lbb = (lbb_header*) hdl;
     
@@ -207,7 +207,7 @@ int lbb_get_free_space(lbb_handle hdl)
 }
 
 /* -------------------------------------------------------------------------- */
-int lbb_get_total_space(lbb_handle hdl)
+u32 lbb_get_total_space(lbb_handle hdl)
 {
     lbb_header* lbb = (lbb_header*) hdl;
     
@@ -215,7 +215,7 @@ int lbb_get_total_space(lbb_handle hdl)
 }
 
 /* -------------------------------------------------------------------------- */
-int lbb_get_block_count(lbb_handle hdl)
+u32 lbb_get_block_count(lbb_handle hdl)
 {
     lbb_header* lbb = (lbb_header*) hdl;
     
@@ -223,7 +223,7 @@ int lbb_get_block_count(lbb_handle hdl)
 }
 
 /* -------------------------------------------------------------------------- */
-int lbb_get_head(lbb_handle hdl)
+u32 lbb_get_head(lbb_handle hdl)
 {
     lbb_header* lbb = (lbb_header*) hdl;
     
@@ -231,7 +231,7 @@ int lbb_get_head(lbb_handle hdl)
 }
 
 /* -------------------------------------------------------------------------- */
-int lbb_get_tail(lbb_handle hdl)
+u32 lbb_get_tail(lbb_handle hdl)
 {
     lbb_header* lbb = (lbb_header*) hdl;
     
@@ -239,7 +239,7 @@ int lbb_get_tail(lbb_handle hdl)
 }
 
 /* -------------------------------------------------------------------------- */
-int lbb_get_tailor_words(lbb_handle hdl)
+u32 lbb_get_tailor_words(lbb_handle hdl)
 {
     lbb_header* lbb = (lbb_header*) hdl;
     
@@ -247,7 +247,7 @@ int lbb_get_tailor_words(lbb_handle hdl)
 }
 
 /* -------------------------------------------------------------------------- */
-int lbb_get_end(lbb_handle hdl)
+u32 lbb_get_end(lbb_handle hdl)
 {
     lbb_header* lbb = (lbb_header*) hdl;
     

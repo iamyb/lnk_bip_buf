@@ -19,7 +19,7 @@ with this program. If not, see <http://www.gnu.org/licenses/>.
 #include "lnk_bip_buf.h"
 
 #ifndef __LNK_BIP_BUF_INTERNAL_H__
-#define  __LNK_BIP_BUF_INTERNAL_H__
+#define __LNK_BIP_BUF_INTERNAL_H__
 
 #define LBB_TRUE      (1)
 #define LBB_FALSE     (0)
@@ -78,7 +78,7 @@ typedef struct lbb_header
     u32   end;            /* buffer end      */
 
     void *extbuf;         /* external buffer */
-    u32   buffer[1];        /* buffer          */
+    u32   buffer[1];      /* buffer          */
 }lbb_header;
 
 #if 0
@@ -161,7 +161,7 @@ int lbb_get_free_space(lbb_handle hdl);
 *  @endcode
 *
 *******************************************************************************/
-int lbb_get_total_space(lbb_handle hdl);
+u32 lbb_get_total_space(lbb_handle hdl);
 
 #if 0
 /**
@@ -203,7 +203,7 @@ int lbb_get_block_count(lbb_handle hdl);
 *  @endcode
 *
 *******************************************************************************/
-int lbb_get_head(lbb_handle hdl);
+u32 lbb_get_head(lbb_handle hdl);
 
 /**
 ********************************************************************************
@@ -223,7 +223,7 @@ int lbb_get_head(lbb_handle hdl);
 *  @endcode
 *
 *******************************************************************************/
-int lbb_get_tail(lbb_handle hdl);
+u32 lbb_get_tail(lbb_handle hdl);
 
 /**
 ********************************************************************************
@@ -243,5 +243,5 @@ int lbb_get_tail(lbb_handle hdl);
 *  @endcode
 *
 *******************************************************************************/
-int lbb_get_tailor_words(lbb_handle hdl);
+u32 lbb_get_tailor_words(lbb_handle hdl);
 #endif
