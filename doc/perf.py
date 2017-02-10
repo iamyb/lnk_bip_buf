@@ -33,4 +33,5 @@ with open("test_performance_results.txt", "r") as f:
 
 	fig = plt.gcf()
 	fig.set_size_inches(16, 9)
+	fig.tight_layout()
 	fig.savefig('performance.png', dpi=200)
