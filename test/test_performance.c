@@ -81,6 +81,20 @@ typedef struct s_alloc
     f_free  free;
 }s_alloc;
 
+
+#define START_SZ_IDX 5 
+#define STOP_SZ_IDX 15
+
+typedef struct s_test
+{
+	void*       hdl;
+	s_alloc     allocator;
+	int         size;
+	int         loop;
+	int         with_memset;
+	long long   results[STOP_SZ_IDX-START_SZ_IDX];
+}s_test;
+
 /* ------------------------------------------------------------------------- */
 static long long diffts(struct timespec start, struct timespec end)
 {
@@ -96,53 +110,110 @@ static long long diffts(struct timespec start, struct timespec end)
 }
 
 /* ------------------------------------------------------------------------- */
-static void meas_perf(void* hdl, s_alloc* allocator, int size, int loop)
+static long long meas_perf(s_test* tc)
 {
     long long total = 0;
     void* ptrs[128];
     int j = 0;
 
-    for(; j < loop; j++)
+    for(; j < tc->loop; j++)
     {
         struct timespec start, end;
         int m;
 
         clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start);
         for(m = 0; m < sizeof(ptrs)/sizeof(void*); m++)
-            ptrs[m] = allocator->alloc(hdl, size);
+            ptrs[m] = tc->allocator.alloc(tc->hdl, tc->size);
+
+		if(tc->with_memset)
+		{
+        	for(m = 0; m < sizeof(ptrs)/sizeof(void*); m++)
+            	memset(ptrs[m], 0xFF, tc->size);
+		}
+		
         for(m = 0; m < sizeof(ptrs)/sizeof(void*); m++)
-            memset(ptrs[m], 0xFF, size);
-        for(m = 0; m < sizeof(ptrs)/sizeof(void*); m++)
-            allocator->free(hdl, ptrs[m]);
+            tc->allocator.free(tc->hdl, ptrs[m]);
         
         clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end);
         
         total += diffts(start, end);
     }
-    total = total / (loop*sizeof(ptrs)/sizeof(void*));
+    total = total / (tc->loop*sizeof(ptrs)/sizeof(void*));
 //    total = total / (size/32);
-    printf("nm %6s, sz %6d, avg: %lld\n", allocator->name, size, total);
+//    printf("nm %6s, sz %6d, avg: %lld\n", tc->allocator.name, tc->size, total);
+	return total;
 }
 
 /* ------------------------------------------------------------------------- */
 #define COUNT 10000
+#define RESULT_FILE "../doc/test_performance_results.txt"
+#include<unistd.h>
+void write_to_file(s_test *tc)
+{
+	FILE* f = fopen(RESULT_FILE, "a+");
+	if(f != NULL)
+	{
+		int i;
+		for(i = 0; i < sizeof(tc->results)/sizeof(long long)-1;i++)
+		{
+			fprintf(f, "%lld, ", tc->results[i]);
+		}
+		fprintf(f, "%lld\n", tc->results[i]);
+		fclose(f);
+	}
+}
+
 int main(void)
 {
     int i;
 
     /* 8MB from hugepage */
     lbb_handle* hdl= lbb_create_to_ext_buf(1024*1024*8, shmaddr);
+	if(access(RESULT_FILE, F_OK) == 0)
+		unlink(RESULT_FILE);
 
     /* allocators for test */
-    s_alloc lbb =   {"lbb",   lbb_alloc,     lbb_free    };
-    s_alloc glibc = {"glibc", glibc_malloc,  glibc_free  };
+	s_alloc glibc = {"glibc", glibc_malloc,  glibc_free};
+	s_alloc lbb =   {"lbb",   lbb_alloc,     lbb_free};	
+
+	s_test tc_glibc, tc_lbb;
+	tc_lbb.hdl           = hdl;
+	tc_lbb.allocator     = lbb;
+	tc_lbb.loop          = COUNT;
+	tc_lbb.with_memset   = 0;
+	
+	tc_glibc.hdl         = NULL;
+	tc_glibc.allocator   = glibc;
+	tc_glibc.loop        = COUNT;	
+	tc_glibc.with_memset = 0;	
 
     /* 32bytes, 64bytes,..., 4096bytes */
-    for(i = 5; i < 15; i++)
+    for(i = START_SZ_IDX; i < STOP_SZ_IDX; i++)
     {
-        meas_perf(hdl,  &lbb,  1<<(i), COUNT);
-        meas_perf(NULL, &glibc,1<<(i), COUNT);
+		tc_glibc.size = tc_lbb.size = 1<<(i);
+        tc_lbb.results[i-START_SZ_IDX]   = meas_perf(&tc_lbb);
+        tc_glibc.results[i-START_SZ_IDX] = meas_perf(&tc_glibc);
+	
     }
+	write_to_file(&tc_lbb);	
+	write_to_file(&tc_glibc);			
+
+	s_test tc_glibc_ms = tc_glibc;
+	s_test tc_lbb_ms   = tc_lbb;
+
+    tc_lbb_ms.with_memset   = 1;
+	tc_glibc_ms.with_memset = 1;
+    /* 32bytes, 64bytes,..., 4096bytes */
+    for(i = START_SZ_IDX; i < STOP_SZ_IDX; i++)
+    {
+		tc_glibc_ms.size = tc_lbb_ms.size = 1<<(i);
+		
+        tc_lbb_ms.results[i-START_SZ_IDX]   = meas_perf(&tc_lbb_ms);
+		tc_glibc_ms.results[i-START_SZ_IDX] = meas_perf(&tc_glibc_ms);
+
+    }	
+	write_to_file(&tc_lbb_ms);	
+	write_to_file(&tc_glibc_ms);			
 
     /* destroy the lbb */
     lbb_destroy(hdl);
