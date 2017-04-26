@@ -1,10 +1,10 @@
-##What is lnk-bip-buf
+## What is lnk-bip-buf
 
 lnk-bip-buf(Linked Bip Buffer, LBB) provides a lightweight and high-performance memory alloc/free mechanism for realtime stream processing. 
 
 It requires the buffer **MUST** be in a continuous memory area to cater the cache policy. With this the successive stream data blocks could be allocated in adjacent memory area,  then reduce cache missing and thrashing during the data processing. It's **thread-unsafe** in current implementation. Therefore you have to add addtional locks to handle the usage in multi-thread processing.
 
-####Usage Example
+#### Usage Example
 
 	/* Keep this buf in a continuous physic memory location for best practice*/ 
 	uint8_t buf[4096];
@@ -18,7 +18,7 @@ It requires the buffer **MUST** be in a continuous memory area to cater the cach
 	/* Free the block */
 	lbb_free(hdl, ptr);
 
-####Perfomance 
+#### Perfomance 
 Below is a comparation between glibc malloc/free and lnk-bip-buf alloc/free. The upper one is to compare the consumed nanoseconds for alloc and free with series block size. And the bottom adds one time memset upon the first scenario. (Ubuntu 16.04, Intel i5-4300U @ 1.96GHz)
 
 ![](./doc/performance.png)
